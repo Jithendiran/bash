@@ -1,0 +1,6 @@
+JPEG
+JPG 
+PNG
+GIF
+TIFF 
+

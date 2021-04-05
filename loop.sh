@@ -1,3 +1,4 @@
+#!/bin/sh
 :'syntax while [ condition ]
 do
     gdb
