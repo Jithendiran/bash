@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 a=('a' 'b' 'c')
 
 echo ${a[0]} #print a[0]

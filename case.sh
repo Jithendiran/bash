@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 a="aa"
 case $a in
   1 )
