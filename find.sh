@@ -1,7 +1,9 @@
+#! /bin/bash
 #find -type f \( -name *.jpg -o -name *.pdf \)
-set x
-name=("*.jpg" "*.png" "*.pdf")
+
+name=("*.jpg" "*.png" "*.pdf" "*.jpeg")
 for i in ${name[@]}
 do
-	echo find . -iname $i
+	find ~ -iname $i
+	#echo $a
 done
