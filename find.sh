@@ -21,13 +21,17 @@ fi
 
 for i in ${name[@]}
 do
-	for j in $( find ~ -path $dir -prune -o -iname $i )
+	for j in $( find /home/jidesh/ML -path $dir -prune -o -iname $i )
 	do
-		path=${j// /\ }
-		ln -s $path $dir/${j##*/}
+		
+		#path=${j// /\\ }
+		#echo $path
+		#ln -s $path $dir/${j##*/}
 		 
+		echo ${j[@]}
 		
 		#echo $dir${j##*/}
+		done
 	done
 	
 done
