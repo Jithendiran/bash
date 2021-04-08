@@ -1,6 +1,8 @@
 #!/bin/bash
 #find -type f \( -name *.jpg -o -name *.pdf \)
 
+#find /home/jidesh/ML/Neural\ Network/dogs-vs-cats/train/ -iname '*.jpg' -exec ln -sf -t /home/jidesh/GALLERY/ {} +;
+
 name=()
 File_Formats=$(<files.txt)
 
@@ -13,29 +15,27 @@ dir=$HOME/GALLERY
 
 if [ ! -d $dir ]
 then 
-mkdir $HOME/GALLERY
+mkdir $dir
 notify-send "Created"
 
 fi
 
 
+#path=()
 for i in ${name[@]}
 do
-	for j in $( find /home/jidesh/ML -path $dir -prune -o -iname $i )
-	do
-		
-		#path=${j// /\\ }
-		#echo $path
-		#ln -s $path $dir/${j##*/}
-		 
-		echo ${j[@]}
-		
-		#echo $dir${j##*/}
-		done
-	done
 	
+	#while IFS=  read -r -d $'\0'; do
+	#	path+=("$REPLY")
+	#done < <(find /home/jidesh/ML  -path $dir -prune -o -iname $i -print0  | sed -e 's/ /\\ /g' )
+
+	find ~ -path $dir -prune -o  -iname $i -exec ln -sf -t $dir/ {} +;
 done
 
-sudo chmod -R 774 $dir 
-
+#sudo chmod -R 774 $dir 
+#echo ${#path[@]}
+#echo $(basename ${path[2]})
+#echo $(dirname ${path[2]})
+#echo ${path[2]}
+#ln -sf "${path[2,0]}" /home/jidesh/
 successbeep
