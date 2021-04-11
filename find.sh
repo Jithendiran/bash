@@ -29,7 +29,7 @@ do
 	#	path+=("$REPLY")
 	#done < <(find /home/jidesh/ML  -path $dir -prune -o -iname $i -print0  | sed -e 's/ /\\ /g' )
 
-	find ~ -path $dir -prune -o  -iname $i -exec ln -sf -t $dir/ {} +;
+	find ~ -path $dir -prune -o ! -path "*/\.*" -iname $i -exec ln -sf -t $dir/ {} +;
 done
 
 #sudo chmod -R 774 $dir 
