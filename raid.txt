@@ -1,0 +1,136 @@
+Software Raid
+Create partion 
+	$ sudo fdisk /dev/sda
+	$ Command :n, partition number : default, first sector default, last sector: +10G, command w
+	(repeat last command 4 times)
+	$ sudo fdisk -l /dev/sda
+	
+//Raid
+	$ sudo mdadm --create --verbose /dev/md0 --level=10 --raid-devices=4 /dev/sda3 /dev/sda4 /dev/sda5 /dev/sda6
+	$ cat /proc/mdstat
+	$ sudo mkfs.ext4 -F /dev/md0
+	$ sudo mount /dev/md0 /mnt/md0
+	$ sudo mkdir -p /mnt/data
+	$ sudo mount /dev/md0 /mnt/data
+	$ df -h -x devtmpfs -x tmpfs
+	$ mdadm --detail --scan >> /etc/mdadm/mdadm.conf
+	$ cat /etc/mdadm/mdadm.conf (get uuid)
+	
+// auto mount 
+	$ blkid
+	$ echo 'UUID=89ab9a7e-70b0-312c-6a9a-aec410ebba17 /mnt/md127 ext4 defaults,nofail,discard 0 0' >> /etc/fstab 
+	(or)
+	echo '/dev/md127 /mnt/md127 ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
+	$ sudo addgroup ubuntu
+	$ sudo usermod -a -G ubuntu jidesh
+	$ sudo usermod -a -G ubuntu root
+
+
+varify RAID by
+
+$ cat /proc/mdstat
+$ mdadm --E /dev/sda1
+
+$ sudo apt install mysql-server php8.1 php8.1-mysql nginx -y
+$ sudo apt purge apache2*
+$ sudo systemctl start mysql.service
+
+$ sudo mysql -u root -p (for password blank and enter)
+$~ show databases; 
+$~ use mysql; 
+$~ update user set plugin=‘mysql_native_password’ where user=‘root’;
+$~ flush privileges; 
+'after this root user password will be system password'
+
+
+$~ create database my_db;
+$~ create user 'jidesh'@'localhost' identified by '123456789';
+
+
+$~ GRANT ALTER, DELETE, EVENT, EXECUTE, INDEX, INSERT, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE, CREATE, CREATE VIEW, DROP, CREATE ROUTINE, ALTER ROUTINE,LOCK TABLES, CREATE TEMPORARY TABLES ON my_db.* TO 'jidesh'@'localhost';
+
+
+$~ create user 'backupadmin'@'localhost' identified by '123456789';
+
+$~ GRANT INSERT,LOCK TABLES,SELECT, SHOW VIEW, TRIGGER, PROCESS ON *.* TO 'backupadmin'@'localhost';
+$~ QUIT;
+$~ flush privileges;
+$ mysqldump -u backupadmin -p --all-databases > bak.sql
+$ mysql -u root -p  < bak.sql
+
+$ CREATE TABLE employee  
+(  
+employeeID int AUTO_INCREMENT PRIMARY KEY,  
+name varchar(255) NOT NULL,  
+email varchar(255) NOT NULL,  
+addressLine varchar(255), 
+);
+
+$ CREATE TABLE attendance  
+(  
+employeeID int NOT NULL,  
+date DATETIME NOT NULL,  
+isPresent BOOLEAN NOT NULL
+FOREIGN KEY (employeeID)
+      REFERENCES employee(employeeID)
+);
+
+
+NGINX
+
+/etc/hosts
+192.168.61.27 www.site1.com     site1.com
+192.168.61.27 www.site2.com     site2.com
+
+site.conf
+ server {
+    listen 3000;
+    listen [::]:3000;
+    server_name site1.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 6000;
+    listen [::]:6000;
+    server_name site2.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+        listen 443 ssl;
+        server_name site1.com;
+        root /mnt/md127/site1;
+        index index.php index.html;
+
+        ssl_certificate /mnt/md127/certificate/certificate.crt;
+        ssl_certificate_key /mnt/md127/certificate/privatekey.key;
+        location / {
+         try_files $uri $uri/ =404;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        }
+}
+
+
+server {
+        listen 443 ssl;
+        server_name site2.com;
+        root /mnt/md127/site2;
+        index index.php index.html;
+        ssl_certificate /mnt/md127/certificate/certificate.crt;
+        ssl_certificate_key /mnt/md127/certificate/privatekey.key;
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        }
+
+}
+
