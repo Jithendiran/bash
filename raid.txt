@@ -31,10 +31,12 @@ varify RAID by
 $ cat /proc/mdstat
 $ mdadm --E /dev/sda1
 
+// Install
 $ sudo apt install mysql-server php8.1 php8.1-mysql nginx -y
 $ sudo apt purge apache2*
 $ sudo systemctl start mysql.service
 
+// SQL
 $ sudo mysql -u root -p (for password blank and enter)
 $~ show databases; 
 $~ use mysql; 
@@ -53,27 +55,35 @@ $~ GRANT ALTER, DELETE, EVENT, EXECUTE, INDEX, INSERT, REFERENCES, SELECT, SHOW 
 $~ create user 'backupadmin'@'localhost' identified by '123456789';
 
 $~ GRANT INSERT,LOCK TABLES,SELECT, SHOW VIEW, TRIGGER, PROCESS ON *.* TO 'backupadmin'@'localhost';
-$~ QUIT;
 $~ flush privileges;
-$ mysqldump -u backupadmin -p --all-databases > bak.sql
-$ mysql -u root -p  < bak.sql
+$~ QUIT;
 
-$ CREATE TABLE employee  
+
+$ mysql -u jidesh -p
+$~ CREATE TABLE employee  
 (  
 employeeID int AUTO_INCREMENT PRIMARY KEY,  
 name varchar(255) NOT NULL,  
 email varchar(255) NOT NULL,  
-addressLine varchar(255), 
+addressLine varchar(255)
 );
 
-$ CREATE TABLE attendance  
+$~ CREATE TABLE attendance  
 (  
 employeeID int NOT NULL,  
 date DATETIME NOT NULL,  
-isPresent BOOLEAN NOT NULL
+isPresent BOOLEAN NOT NULL,
 FOREIGN KEY (employeeID)
       REFERENCES employee(employeeID)
 );
+
+$~quit;
+
+$ mysqldump -u backupadmin -p --all-databases > bak.sql
+$ mysql -u root -p  < bak.sql
+
+$ scp jidesh@192.168.61.27:/mnt/md127/bak.sql /mnt/Project/WEBERON/Sysops # server to local
+$ scp /mnt/Project/WEBERON/Sysops/bak.sql jidesh@192.168.61.27:/mnt/md127
 
 
 NGINX
@@ -133,4 +143,3 @@ server {
         }
 
 }
-
