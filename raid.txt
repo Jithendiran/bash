@@ -59,7 +59,7 @@ $~ flush privileges;
 $~ QUIT;
 
 
-$ mysql -u jidesh -p
+$ mysql -u jidesh -p123456789
 $~ CREATE TABLE employee  
 (  
 employeeID int AUTO_INCREMENT PRIMARY KEY,  
@@ -79,7 +79,7 @@ FOREIGN KEY (employeeID)
 
 $~quit;
 
-$ mysqldump -u backupadmin -p --all-databases > bak.sql
+$ mysqldump -u backupadmin -p123456789 --all-databases > bak.sql
 $ mysql -u root -p  < bak.sql
 
 $ scp jidesh@192.168.61.27:/mnt/md127/bak.sql /mnt/Project/WEBERON/Sysops # server to local
