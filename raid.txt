@@ -31,8 +31,7 @@ varify RAID by
 $ cat /proc/mdstat
 $ mdadm --E /dev/sda1
 
-// Install
-$ sudo apt install mysql-server php8.1 php8.1-mysql nginx -y
+$ sudo apt install mysql-server php8.1 php8.1-mysql nginx cron -y
 $ sudo apt purge apache2*
 $ sudo systemctl start mysql.service
 
@@ -84,6 +83,17 @@ $ mysql -u root -p  < bak.sql
 
 $ scp jidesh@192.168.61.27:/mnt/md127/bak.sql /mnt/Project/WEBERON/Sysops # server to local
 $ scp /mnt/Project/WEBERON/Sysops/bak.sql jidesh@192.168.61.27:/mnt/md127
+
+// Backup
+$ vim /mnt/md127/mysql_backup.sh
+	#! /bin/bash
+	
+	echo 'Mysql Backup'
+	sqlfile=sql-$(date +%d-%m-%Y_%H-%M-%S).sql
+	mysqldump -u backupadmin -p123456789 --all-databases > /mnt/md127/$sqlfile
+	
+$ sudo crontab -e
+  30 10 * * * sh /mnt/md127/mysql_backup.sh
 
 
 NGINX
