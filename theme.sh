@@ -34,3 +34,6 @@ gsettings set org.gnome.shell.extensions.desktop-icons show-home false
 
 #inteligent hide for dock
 gsettings set org.gnome.shell.extensions.dash-to-dock intellihide true
+
+#Vlc.desktop
+#Exec=env QT_QPA_PLATFORMTHEME=gtk2 /usr/bin/vlc --started-from-file %U
